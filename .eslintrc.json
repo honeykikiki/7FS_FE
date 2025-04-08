@@ -1,0 +1,42 @@
+{
+  "parser": "@typescript-eslint/parser",
+  "extends": [
+    "next",
+    "next/core-web-vitals", 
+    "prettier", 
+    "eslint:recommended",
+    "plugin:@typescript-eslint/recommended"
+  ],
+  "plugins": [
+    "prettier", 
+    "simple-import-sort", 
+    "unused-imports", 
+    "@typescript-eslint"
+  ],
+  "rules": {
+    "prettier/prettier": "error",
+    "import/order": [
+      "error",
+      {
+        "groups": ["builtin", "external", "internal", ["parent", "type"], "sibling", "index", "object"],
+        "alphabetize": {
+          "order": "asc",
+          "caseInsensitive": true
+        }
+      }
+    ],    
+    "unused-imports/no-unused-imports": "warn",
+    "unused-imports/no-unused-vars": [
+      "warn",
+      {
+        "vars": "all",
+        "args": "none"
+      }
+    ],
+    // 사용하지 않는 변수 경고로 변경      
+    "no-unused-vars": "warn",
+    "@typescript-eslint/no-unused-vars": "warn",
+    // JavaScript에서 비교 연산자 == (느슨한 동등 비교) 대신 === (엄격한 동등 비교)을 사용하도록 강제
+    "eqeqeq": ["warn", "always"]
+  }
+}
