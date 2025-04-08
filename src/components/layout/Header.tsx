@@ -51,6 +51,7 @@ const Container = styled.div`
   top: 0;
   left: 220px;
   width: calc(100% - 220px);
+  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
 `;
 
 const HeaderWrapper = styled.header`
