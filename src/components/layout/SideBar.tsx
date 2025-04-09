@@ -1,5 +1,4 @@
 import Flex from "@components/shared/Flex";
-import Icons from "@components/shared/Icons";
 import Spacing from "@components/shared/Spacing";
 import MyText from "@components/shared/Text";
 import { css } from "@emotion/react";
@@ -7,8 +6,18 @@ import styled from "@emotion/styled";
 import { colors } from "@styles/colorPlatte";
 import { spacing } from "@styles/spacingPalette";
 import Link from "next/link";
+import { useRouter } from "next/router";
+
+const sideBar = [
+  { link: "/home", title: "홈", icon: "🏠" },
+  { link: "/webfolder", title: "자료실", icon: "📁" },
+  { link: "/approval", title: "전자결제", icon: "📝" },
+  { link: "/board", title: "게사판", icon: "📢" },
+];
 
 export default function Sidebar() {
+  const router = useRouter();
+
   return (
     <SidebarWrapper>
       <Flex
@@ -23,12 +32,19 @@ export default function Sidebar() {
 
       <Spacing size={spacing.lg} />
       <Flex direction="column">
-        <NavItem href="/">
-          <Icons.Home size={20} /> <MyText color="textMutedColor">홈</MyText>
-        </NavItem>
-        <NavItem href="/dataRoom">📁 자료실</NavItem>
-        <NavItem href="/approval">📝 전자결재</NavItem>
-        <NavItem href="/board">📢 게시판</NavItem>
+        {sideBar.map((sideBar) => (
+          <>
+            <NavItem href={sideBar.link}>
+              {sideBar.icon}{" "}
+              <MyText
+                color={router.pathname === sideBar.link ? "primary" : "textMutedColor"}
+                fontWeight={router.pathname === sideBar.link ? "bold" : "normal"}
+              >
+                {sideBar.title}
+              </MyText>
+            </NavItem>
+          </>
+        ))}
       </Flex>
     </SidebarWrapper>
   );
@@ -49,14 +65,8 @@ const SidebarWrapper = styled.aside`
 
 const NavItem = styled(Link)`
   padding: 14px 24px;
-  color: ${colors.textColor};
-  text-decoration: none;
+
   &:hover {
     background-color: ${colors.sideBarHoverColor};
   }
 `;
-
-// const AppTitle = styled.MyText()`
-//   padding: 0 24px;
-//   height: 64px;
-// `;

@@ -36,8 +36,8 @@ apiClient.interceptors.response.use(
   async (error) => {
     const originalRequest = error.config;
 
-    console.log("originalRequest.url", originalRequest.url);
-    console.log("error", error.response?.status);
+    // console.log("originalRequest.url", originalRequest.url);
+    // console.log("error", error.response?.status);
 
     if (
       !hasRedirected &&

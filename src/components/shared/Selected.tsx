@@ -36,11 +36,16 @@ const SelectContainer = styled.div<{ size: SelectType }>`
   }}
 `;
 
+export interface itemListProps {
+  key: string;
+  value: string | number;
+}
+
 interface SelectedProps extends HTMLAttributes<HTMLDivElement> {
   title: string;
-  currentItem: string;
-  setCurrentItem: Dispatch<SetStateAction<string>>;
-  itemList: string[];
+  currentItem: itemListProps;
+  setCurrentItem: Dispatch<SetStateAction<itemListProps>>;
+  itemList: itemListProps[];
   size?: SelectType;
 }
 
@@ -67,7 +72,7 @@ function Selected({ title, currentItem, setCurrentItem, itemList, size = "md", .
                 const bSelected = item === currentItem;
                 return (
                   <SelectedItem
-                    key={item + idx}
+                    key={item.key + idx}
                     bSelected={bSelected}
                     item={item}
                     onClick={(item) => {
@@ -83,7 +88,7 @@ function Selected({ title, currentItem, setCurrentItem, itemList, size = "md", .
       }}
       {...props}
     >
-      <MyText typography={Typography}>{currentItem}</MyText>
+      <MyText typography={Typography}>{currentItem.key}</MyText>
       <Spacing size="md" direction="horizontal" />
       <Icons.ArrowBottom />
     </SelectContainer>
@@ -91,9 +96,9 @@ function Selected({ title, currentItem, setCurrentItem, itemList, size = "md", .
 }
 
 interface SelectedItemProps {
-  item: string;
+  item: itemListProps;
   bSelected: boolean;
-  onClick: (item: string) => void;
+  onClick: (item: itemListProps) => void;
 }
 
 function SelectedItem({ item, bSelected, onClick }: SelectedItemProps) {
@@ -101,7 +106,7 @@ function SelectedItem({ item, bSelected, onClick }: SelectedItemProps) {
     <Button text={true} role="option" aria-selected={bSelected} full={true} onClick={() => onClick(item)}>
       <Flex justify="space-between" align="center">
         <MyText color={bSelected ? "primary" : "textColor"} fontWeight={bSelected ? "bold" : "normal"}>
-          {item}
+          {item.key}
         </MyText>
         {bSelected && <Icons.Check color="primary" />}
       </Flex>

@@ -22,7 +22,7 @@ function Page() {
         onClick={async () => {
           try {
             const res = await apiClient.get("/api/empList");
-            console.log(res.data);
+            // console.log(res.data);
           } catch (error) {
             console.log(error);
           }

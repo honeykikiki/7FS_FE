@@ -6,7 +6,7 @@ import Spacing from "./Spacing";
 import MyText from "./Text";
 import AutoResizingTextarea from "./TextArea";
 
-interface InputFiledProps extends InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
+export interface InputFiledProps extends InputHTMLAttributes<HTMLInputElement | HTMLTextAreaElement> {
   label?: React.ReactNode;
   hasError?: boolean;
   helpMessage?: React.ReactNode;
@@ -63,8 +63,7 @@ export const InputFiled = forwardRef<HTMLInputElement, InputFiledProps>(function
         />
       )}
 
-      <Spacing size="xs" />
-
+      {helpMessage && hasError ? <Spacing size="xs" /> : null}
       <Flex justify={helpMessage && hasError ? "space-between" : "end"}>
         {helpMessage && hasError ? (
           <MyText typography="t7" color={labelColor}>

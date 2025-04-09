@@ -6,9 +6,8 @@ import CheckBox from "@components/shared/CheckBox";
 import Flex from "@components/shared/Flex";
 import Frame from "@components/shared/Frame";
 import { InputFiled } from "@components/shared/InputFiled";
-import MyBtn from "@components/shared/MyBtn";
 import SearchForm from "@components/shared/SearchForm";
-import Selected from "@components/shared/Selected";
+import Selected, { itemListProps } from "@components/shared/Selected";
 import Spacing from "@components/shared/Spacing";
 import StepBar from "@components/shared/StepBar";
 import Tab from "@components/shared/Tab";
@@ -23,7 +22,7 @@ const tabList = ["홈", "게시판", "일정", "앨범"];
 function Page() {
   const themeContext = useContext(ThemeContext);
   const [bSignup, setBSignup] = useState(false);
-  const [select, setSelect] = useState("최근 가입 순");
+  const [select, setSelect] = useState<itemListProps>({ key: "20개씩", value: 20 });
 
   const { open } = useAlertContext();
 
@@ -33,17 +32,20 @@ function Page() {
       <Spacing size={40} />
 
       <Selected
-        title="최근 가입 순2"
+        title="20개씩"
         currentItem={select}
         setCurrentItem={setSelect}
-        itemList={["최근 가입 순", "마지막 방문 순", "게시글 많은 순", "일정 참여 많은 순"]}
+        itemList={[
+          { key: "10개씩", value: 10 },
+          { key: "20개씩", value: 20 },
+          { key: "30개씩", value: 30 },
+        ]}
         size="md"
       />
 
       <MyText display="block" typography="t1">
         모드 토글 버튼
       </MyText>
-      <MyBtn>myButton</MyBtn>
       <Button
         size="lg"
         onClick={() => {

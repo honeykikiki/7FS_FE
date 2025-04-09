@@ -14,12 +14,14 @@ interface TextProps {
   textAlign?: CSSProperties["textAlign"];
   fontWeight?: FontWeight;
   bEllipsis?: boolean;
+  hoverColor?: Colors;
 }
 
 const Text = styled.span<TextProps>(
   { whiteSpace: "pre-line" },
+
   ({ typography = "t5" }) => typographyMap[typography],
-  ({ color = "textColor", display, textAlign, fontWeight = "normal" }) => ({
+  ({ color = "textColor", display, textAlign }) => ({
     color: colors[color],
     textAlign,
     display,
@@ -33,6 +35,14 @@ const Text = styled.span<TextProps>(
           WebkitBoxOrient: "vertical",
           WebkitLineClamp: 2,
           textOverflow: "ellipsis",
+        }
+      : null,
+  ({ hoverColor }) =>
+    hoverColor
+      ? {
+          "&:hover": {
+            color: colors[hoverColor],
+          },
         }
       : null,
 );

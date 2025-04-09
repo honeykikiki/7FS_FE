@@ -50,7 +50,7 @@ function LoginPage() {
         setLoginFail(true);
       }
     } catch (error) {
-      console.log(error);
+      // console.log(error);
       setLoginFail(true);
     }
 

@@ -1,9 +1,9 @@
 import styled from "@emotion/styled";
-import Input from "./Input";
+import { InputFiled, InputFiledProps } from "./InputFiled";
 
 const InputContainer = styled.div`
   position: relative;
-  width: 100%;
+  width: fit-content;
 `;
 
 const SearchIcon = styled.span`
@@ -18,11 +18,11 @@ const SearchIcon = styled.span`
   background-repeat: no-repeat;
 `;
 
-const SearchForm = () => {
+const SearchForm = ({ ...props }: InputFiledProps) => {
   return (
     <InputContainer>
       <SearchIcon />
-      <Input css={{ padding: "0 20px 0 40px" }} />
+      <InputFiled css={{ padding: "0 20px 0 40px" }} {...props} />
     </InputContainer>
   );
 };
