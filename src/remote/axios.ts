@@ -1,12 +1,12 @@
 import axios from "axios";
 
 // export const url = "http://39.119.222.230:8080/";
-export const url = "http://localhost/";
+export const URL = "http://localhost/";
 let hasRedirected = false; // 인터셉터 바깥에 선언
 
 // axios 인스턴스 생성
 const apiClient = axios.create({
-  baseURL: url, // API 기본 URL 설정
+  baseURL: URL, // API 기본 URL 설정
   timeout: 10000, // 요청 타임아웃 설정
   headers: {
     // "Content-Type": "application/json",

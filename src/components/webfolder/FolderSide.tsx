@@ -16,6 +16,7 @@ function FolderSide() {
     <Flex direction="column" css={sidebarStyle}>
       <Button
         full={true}
+        size="lg"
         onClick={() => {
           open({
             body: (
@@ -40,17 +41,15 @@ function FolderSide() {
       <Spacing size="md" />
       <div css={folderTreeStyle}>
         <MyText typography="t5" fontWeight="500">
-          전사 자료실
+          자료실
         </MyText>
         <ul>
           <li>
-            <MyText color="textMutedColor" hoverColor="textColor">
-              비교자료
-            </MyText>
+            <MyText hoverColor="textColor">전사 자료실</MyText>
           </li>
           <li>
             <MyText color="textMutedColor" hoverColor="textColor">
-              소개자료
+              부서 자료실
             </MyText>
           </li>
         </ul>
@@ -107,4 +106,5 @@ const sidebarStyle = css`
   padding: 1rem;
   display: flex;
   flex-direction: column;
+  border-radius: 10px;
 `;

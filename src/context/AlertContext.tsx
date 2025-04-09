@@ -32,8 +32,9 @@ export function AlertContextProvider({ children }: { children: React.ReactNode }
       setAlertState({
         ...options,
         onConfirmClick: () => {
+          const result = onConfirmClick?.();
+          if (result) return;
           close();
-          onConfirmClick?.();
         },
         onCancelClick: () => {
           close();

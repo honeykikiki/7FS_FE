@@ -82,11 +82,7 @@ function LoginPage() {
           onChange={handleChange}
           type="password"
           maxLength={20}
-          onKeyDown={(e) => {
-            if (e.key === "Enter") {
-              loginPost();
-            }
-          }}
+          enterClick={loginPost}
           hasError={loginFail && !password}
         />
         <Spacing size="lg" />

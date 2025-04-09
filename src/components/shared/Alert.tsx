@@ -10,7 +10,7 @@ import MyText from "./Text";
 export interface AlertProps {
   open: boolean;
   title: string;
-  description?: string;
+  description?: string | React.ReactNode;
   confirmText?: string;
   cancelText?: string;
   onConfirmClick?: () => void;
@@ -66,7 +66,7 @@ function Alert({
         {bStretchButton ? (
           <Button.Group>
             <Button size="lg" color="gray" css={{ flex: 2 }} onClick={onCancelClick}>
-              <MyText>{cancelText}</MyText>
+              <MyText fontWeight="500">{cancelText}</MyText>
             </Button>
             <Button size="lg" css={{ flex: 8 }} onClick={onConfirmClick}>
               {confirmText}

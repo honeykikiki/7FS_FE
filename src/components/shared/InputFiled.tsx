@@ -13,10 +13,11 @@ export interface InputFiledProps extends InputHTMLAttributes<HTMLInputElement | 
   maxLength?: number;
   currentLength?: number;
   bTextArea?: boolean;
+  enterClick?: () => void;
 }
 
 export const InputFiled = forwardRef<HTMLInputElement, InputFiledProps>(function InputFiled(
-  { label, hasError, onFocus, onBlur, helpMessage, maxLength, currentLength, bTextArea = false, ...props },
+  { label, hasError, onFocus, onBlur, helpMessage, maxLength, currentLength, bTextArea = false, enterClick, ...props },
   ref,
 ) {
   const [focused, setFocused] = useState(false);
@@ -59,6 +60,11 @@ export const InputFiled = forwardRef<HTMLInputElement, InputFiledProps>(function
           onFocus={handleFocus}
           onBlur={handleBlur}
           maxLength={maxLength}
+          onKeyDown={(e) => {
+            if (e.key === "Enter") {
+              enterClick?.();
+            }
+          }}
           {...props}
         />
       )}

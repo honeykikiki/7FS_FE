@@ -8,10 +8,8 @@ import useFolder from "@components/webfolder/hooks/useFolder";
 import { css } from "@emotion/react";
 
 function DataRoom() {
-  const [upperFolderNo, setUpperFolderNo] = useState(2);
-  const { data } = useFolder(upperFolderNo.toString());
-
-  console.log(data);
+  const [upperFolderNo, setUpperFolderNo] = useState([1]);
+  const { data } = useFolder(upperFolderNo);
 
   return (
     <Frame title="자료실">
@@ -20,7 +18,12 @@ function DataRoom() {
         <Spacing size="lg" direction="horizontal" />
         <Flex direction="column" css={wrapperStyle}>
           {/* 자료 목록 테이블 */}
-          <FolderTable level={upperFolderNo} folder={data?.folder} />
+          <FolderTable
+            upperFolderNo={upperFolderNo}
+            setUpperFolderNo={setUpperFolderNo}
+            folder={data?.folder}
+            files={data?.files}
+          />
         </Flex>
       </Flex>
     </Frame>

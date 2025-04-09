@@ -9,7 +9,7 @@ import Link from "next/link";
 import { useRouter } from "next/router";
 
 const sideBar = [
-  { link: "/home", title: "홈", icon: "🏠" },
+  { link: "/", title: "홈", icon: "🏠" },
   { link: "/webfolder", title: "자료실", icon: "📁" },
   { link: "/approval", title: "전자결제", icon: "📝" },
   { link: "/board", title: "게사판", icon: "📢" },
@@ -33,17 +33,15 @@ export default function Sidebar() {
       <Spacing size={spacing.lg} />
       <Flex direction="column">
         {sideBar.map((sideBar) => (
-          <>
-            <NavItem href={sideBar.link}>
-              {sideBar.icon}{" "}
-              <MyText
-                color={router.pathname === sideBar.link ? "primary" : "textMutedColor"}
-                fontWeight={router.pathname === sideBar.link ? "bold" : "normal"}
-              >
-                {sideBar.title}
-              </MyText>
-            </NavItem>
-          </>
+          <NavItem key={sideBar.link} href={sideBar.link}>
+            {sideBar.icon}{" "}
+            <MyText
+              color={router.pathname === sideBar.link ? "primary" : "textMutedColor"}
+              fontWeight={router.pathname === sideBar.link ? "bold" : "normal"}
+            >
+              {sideBar.title}
+            </MyText>
+          </NavItem>
         ))}
       </Flex>
     </SidebarWrapper>

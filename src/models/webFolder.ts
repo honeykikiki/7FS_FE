@@ -3,16 +3,16 @@ import { AttachFile } from "./attachFile";
 export interface WebFolder {
   folderPath: string;
   folderTy: string;
-  deptCode: string;
-  folderCreatDt: string;
-  folderUpdtDt: string;
-  folderDeleteYn: string;
+  deptCode: string | null;
+  folderCreatDt: string | null;
+  folderUpdtDt: string | null;
+  folderDeleteYn: string | null;
   folderCreatEmpno: string;
   folderNo: number;
   upperFolderNo: number;
   folderNm: string;
 
-  fileList: WebFolderFile[];
+  fileList: WebFolderFile[] | null;
 }
 
 export interface WebFolderFile {

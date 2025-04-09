@@ -9,7 +9,7 @@ export const colorPalette = css`
     --success: #48cfad;
     --danger: #ff5555;
     /* 238	236	236	 */
-    --gray: #ebebf0;
+    --gray: #e6e6e6;
     --gray-border: #c4c4c4;
     --danger-100: rgba(255, 85, 85, 0.1);
 

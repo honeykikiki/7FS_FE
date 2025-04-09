@@ -33,7 +33,7 @@ const Text = styled.span<TextProps>(
           overflow: "hidden",
           display: "-webkit-box",
           WebkitBoxOrient: "vertical",
-          WebkitLineClamp: 2,
+          WebkitLineClamp: 1,
           textOverflow: "ellipsis",
         }
       : null,
