@@ -1,0 +1,213 @@
+import React, { useRef, useState } from "react";
+import Button from "@components/shared/Button";
+import Dimmed from "@components/shared/Dimmed";
+import Flex from "@components/shared/Flex";
+import Spacing from "@components/shared/Spacing";
+import MyText from "@components/shared/Text";
+import { css } from "@emotion/react";
+import styled from "@emotion/styled";
+import { colors } from "@styles/colorPlatte";
+import { spacing } from "@styles/spacingPalette";
+import { WebFolder } from "src/models/webFolder";
+import addDelimiter from "src/utils/addDelimiter";
+
+interface FileInfo {
+  id: number;
+  file: File;
+  status: "ready" | "success" | "fail";
+}
+
+interface Props {
+  folderList: WebFolder[];
+  onClose: () => void;
+  onUpload: (files: File[], folder: WebFolder) => void;
+}
+
+const FileUploadModal: React.FC<Props> = ({ folderList, onClose, onUpload }) => {
+  const inputRef = useRef<HTMLInputElement>(null);
+  const [selectedFolder, setSelectedFolder] = useState(folderList[0]);
+  const [files, setFiles] = useState<FileInfo[]>([]);
+
+  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    const uploadFile = e.target.files;
+    if (files.length + (uploadFile?.length ?? 0) > 10) {
+      return;
+    }
+
+    if (uploadFile) {
+      const newFiles = Array.from(uploadFile).map((file, idx) => ({
+        id: files.length + idx,
+        file,
+        status: "ready" as const,
+      }));
+
+      setFiles([...files, ...newFiles]);
+    }
+  };
+
+  const handleDelete = (id: number) => {
+    setFiles(files.filter((file) => id !== file.id));
+  };
+
+  const getFileExtension = (fileName: string) => {
+    return fileName.split(".").pop() || "";
+  };
+
+  const formatBytes = (bytes: number) => {
+    return bytes < 1024 ? `${bytes}B` : `${(bytes / 1024).toFixed(1)}KB`;
+  };
+
+  const handleUpload = () => {
+    onUpload(
+      files.map((f) => f.file),
+      selectedFolder,
+    );
+
+    // onClose();
+  };
+
+  console.log(selectedFolder);
+
+  return (
+    <Dimmed onClick={onClose}>
+      <Container
+        onClick={(e) => {
+          e.stopPropagation();
+        }}
+      >
+        <MyText typography="t3">파일 업로드</MyText>
+
+        <Spacing size="md" />
+        <Spacing size={1} backgroundColor="grayBorder" />
+        <Spacing size="md" />
+
+        <Flex>
+          <MyText typography="t6">대상 폴더 선택</MyText>
+          <Spacing size="md" direction="horizontal" />
+          <select
+            value={selectedFolder?.folderNo ?? 0}
+            onChange={(e) =>
+              setSelectedFolder(
+                folderList.find((folder) => folder.folderNo === Number(e.target.value)) ?? folderList[0],
+              )
+            }
+          >
+            {folderList.length > 0 ? (
+              folderList.map((folder) => (
+                <option key={folder.folderNo} value={folder.folderNo}>
+                  {folder.folderNm}
+                </option>
+              ))
+            ) : (
+              <option>현재폴더</option>
+            )}
+          </select>
+        </Flex>
+
+        <Spacing size="md" />
+        <Flex gap={spacing.md}>
+          <Button onClick={() => inputRef.current?.click()}>파일 추가</Button>
+
+          <input type="file" ref={inputRef} hidden multiple onChange={handleFileChange} />
+        </Flex>
+
+        <Spacing size="lg" />
+        <table css={tableStyle}>
+          <thead>
+            <tr>
+              {/* <th></th> */}
+              <th>파일명</th>
+              <th>확장자</th>
+              <th>파일크기</th>
+              <th>상태</th>
+              <th></th>
+            </tr>
+          </thead>
+          <tbody>
+            {files.map(({ id, file, status }, idx) => {
+              // const checked = selectedFile.includes(id);
+
+              return (
+                <tr key={idx}>
+                  {/* <td>
+                    <InputCheckbox
+                      checked={checked}
+                      onClick={() => {
+                        if (checked) {
+                          setSelectedFile(selectedFile.filter((prevId) => prevId !== id));
+                        } else {
+                          setSelectedFile((prev) => [...prev, id]);
+                        }
+                      }}
+                    />
+                  </td> */}
+                  <td style={{ maxWidth: "280px" }}>
+                    <MyText bEllipsis={true}>{file.name}</MyText>
+                  </td>
+                  <td>
+                    <MyText>{getFileExtension(file.name)}</MyText>
+                  </td>
+                  <td>
+                    <MyText color="textSubColor">{formatBytes(file.size)}</MyText>
+                  </td>
+                  <td>{status === "ready" ? "✔️" : "❌"}</td>
+                  <td>
+                    <Button color="error" weak={true} size="xs" onClick={() => handleDelete(id)}>
+                      삭제
+                    </Button>
+                  </td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+        <Spacing size="md" />
+        <Flex justify="space-between">
+          <MyText>{addDelimiter((files.reduce((sum, f) => sum + f.file.size, 0) / 1024).toFixed(0))}KB / 20MB</MyText>
+        </Flex>
+
+        <Flex justify="end" gap={spacing.md}>
+          <Button color="error" onClick={onClose}>
+            취소
+          </Button>
+          <Button disabled={files.length === 0} onClick={handleUpload}>
+            업로드
+          </Button>
+        </Flex>
+      </Container>
+    </Dimmed>
+  );
+};
+
+const tableStyle = css`
+  width: 100%;
+  border-collapse: collapse;
+  overflow: hidden;
+
+  th,
+  td {
+    padding: 0.5rem;
+    border: 1px solid #ddd;
+    text-align: left;
+  }
+
+  thead {
+    background: #f9f9f9;
+  }
+`;
+
+const Container = styled.div`
+  width: calc(100% - 60px);
+  max-width: 600px;
+  border-radius: 20px;
+  padding: 20px;
+  box-sizing: border-box;
+  position: absolute;
+  left: 50%;
+  top: 50%;
+  transform: translate(-50%, -50%);
+  height: auto;
+  background-color: ${colors.background};
+`;
+
+export default FileUploadModal;

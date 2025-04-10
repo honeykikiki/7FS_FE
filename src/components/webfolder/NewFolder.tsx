@@ -23,7 +23,6 @@ function NewFolder({ upperFolderNo }: { upperFolderNo: number[] }) {
 
     setIsSubmitting(true);
     try {
-      console.log("???");
       await insertFolder(folderName, upperFolderNo[upperFolderNo.length - 1].toString());
 
       queryClient.invalidateQueries({ queryKey: ["folder", upperFolderNo] });

@@ -1,38 +1,46 @@
-import BottomSheetContent from "@components/shared/BottomSheetItem";
+import { useState } from "react";
 import Button from "@components/shared/Button";
 import Flex from "@components/shared/Flex";
 import Spacing from "@components/shared/Spacing";
 import MyText from "@components/shared/Text";
 import { css } from "@emotion/react";
 import { colors } from "@styles/colorPlatte";
+import { useQueryClient } from "@tanstack/react-query";
 import { useAuthContext } from "src/context/AuthContext";
-import { useBottomSheetContext } from "src/context/BottomSheetContext";
+import { WebFolder } from "src/models/webFolder";
+import FileUploadModal from "./FileUploadModal";
 
-function FolderSide() {
+interface FolderSideProps {
+  folder?: WebFolder[];
+}
+
+function FolderSide({ folder }: FolderSideProps) {
+  const queryClient = useQueryClient();
   const { emp } = useAuthContext();
-  const { open, close } = useBottomSheetContext();
+  const [showUploadModal, setShowUploadModal] = useState(false);
 
   return (
     <Flex direction="column" css={sidebarStyle}>
+      {/*  현재 바라보고 있는 폴더 하위 폴더 선택만 가능했음 */}
+      {/* 현재 폴더는 선택이 불가능 함 */}
+      {showUploadModal && (
+        <FileUploadModal
+          folderList={folder ?? []}
+          onUpload={async (files, folder) => {
+            console.log("업로드할 파일:", files);
+            console.log("대상 폴더:", folder);
+            // await insertFiles(files, folder);
+            queryClient.invalidateQueries({ queryKey: ["folder"] });
+          }}
+          onClose={() => setShowUploadModal(false)}
+        />
+      )}
+
       <Button
         full={true}
         size="lg"
         onClick={() => {
-          open({
-            body: (
-              <BottomSheetContent>
-                <BottomSheetContent.Item>
-                  <BottomSheetContent.Text>새폴더</BottomSheetContent.Text>
-                </BottomSheetContent.Item>
-                <BottomSheetContent.Item>
-                  <BottomSheetContent.Text>새파일</BottomSheetContent.Text>
-                </BottomSheetContent.Item>
-                <BottomSheetContent.Item onClick={close}>
-                  <BottomSheetContent.Text>닫기</BottomSheetContent.Text>
-                </BottomSheetContent.Item>
-              </BottomSheetContent>
-            ),
-          });
+          setShowUploadModal(true);
         }}
       >
         파일 업로드

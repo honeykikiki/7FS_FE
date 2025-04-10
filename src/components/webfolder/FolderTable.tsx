@@ -46,10 +46,10 @@ function FolderTable({ upperFolderNo, setUpperFolderNo, folder, files }: FolderT
           <thead>
             <tr>
               <th></th>
-              <th>이름</th>
-              <th>크기</th>
+              <th align="left">이름</th>
+              <th align="right">크기</th>
               <th>확장자</th>
-              <th>등록일</th>
+              <th align="center">등록일</th>
               <th></th>
             </tr>
           </thead>
@@ -65,7 +65,8 @@ function FolderTable({ upperFolderNo, setUpperFolderNo, folder, files }: FolderT
                   setUpperFolderNo(newUpperFolderNo);
                 }}
               >
-                <td colSpan={6}>
+                <td></td>
+                <td colSpan={5}>
                   <MyText>...상위폴더</MyText>
                 </td>
               </tr>
@@ -130,7 +131,7 @@ const tableStyle = css`
 
   th {
     background-color: ${colors.gray};
-    text-align: left;
+    /* text-align: left; */
   }
 
   tbody tr:hover {

@@ -18,7 +18,9 @@ function WebFile(file: WebFolderFile) {
           {file.attachFileVO.fileNm}
         </MyText>
       </td>
-      <td>{file.attachFileVO.fileViewSize}</td>
+      <td align="right">
+        <MyText>{file.attachFileVO.fileViewSize}</MyText>
+      </td>
       <td>{file.attachFileVO.fileMime.split("/")[1]}</td>
       <td>{dateFormat({ date: file.attachFileVO.fileCreatDt, format: "YY.MM.DD HH:MM" })}</td>
       <td>

@@ -26,3 +26,29 @@ export const insertFolder = async (folderNm: string, upperFolderNo: string) => {
     data: data as WebFolder,
   };
 };
+
+export const insertFiles = async (files: File[], folder: WebFolder) => {
+  const formData = new FormData();
+  files.forEach((file) => {
+    formData.append("uploadFile", file);
+  });
+  // formData.append("webFolderVO", folder);
+  // Object.entries(folder).forEach(([key, value]) => {
+  //   formData.append(key, value);
+  // });
+
+  formData.append("folderNo", folder.folderNo.toString());
+  formData.append("folderPath", folder.folderPath);
+
+  // // for (const [key, value] of formData.entries()) {
+  // //   console.log(`${key}:`, value);
+  // // }
+
+  // return;
+
+  const data = await apiClient.post("/webFolder/insertFiles", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+};
