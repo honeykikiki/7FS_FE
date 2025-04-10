@@ -56,6 +56,7 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
 
       if (data) {
         setEmp(data.user);
+        localStorage.setItem("hasRedirected", "true");
         return true;
       }
     } catch (error) {
