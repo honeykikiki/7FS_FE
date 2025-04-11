@@ -1,4 +1,4 @@
-import React, { useCallback, useRef, useState } from "react";
+import React, { useCallback, useEffect, useRef, useState } from "react";
 import Button from "@components/shared/Button";
 import Dimmed from "@components/shared/Dimmed";
 import Flex from "@components/shared/Flex";
@@ -21,20 +21,21 @@ interface FileInfo {
   status: "ready" | "success" | "fail";
 }
 
-interface Props {
-  // folderList: WebFolder[];
+interface FileUploadModalProps {
   onClose: () => void;
   onUpload: (files: File[], folder: WebFolder) => void;
 }
 
-const FileUploadModal: React.FC<Props> = ({ onClose, onUpload }) => {
+const FileUploadModal = ({ onClose, onUpload }: FileUploadModalProps) => {
   const upperFolderNo = useRecoilValue(folderListState);
   const { data } = useFolderList();
   const inputRef = useRef<HTMLInputElement>(null);
   // 초기에는 내가 보고 있는 폴더명 추가
-  const [selectedFolder, setSelectedFolder] = useState(
-    data?.folderList.filter((item) => item.folderNo === upperFolderNo[upperFolderNo.length - 1])[0],
-  );
+  const [selectedFolder, setSelectedFolder] = useState<WebFolder>();
+
+  useEffect(() => {
+    setSelectedFolder(data?.folderList.filter((item) => item.folderNo === upperFolderNo[upperFolderNo.length - 1])[0]);
+  }, [data?.folderList, upperFolderNo]);
 
   const [files, setFiles] = useState<FileInfo[]>([]);
 

@@ -15,6 +15,7 @@ interface FolderProps {
 function Folder({ folder, selectFolders, setSelectFolders }: FolderProps) {
   const [upperFolderNo, setUpperFolderNo] = useRecoilState(folderListState);
   const [upperFolderName, setUpperFolderName] = useRecoilState(upperFolderNameState);
+
   return (
     <>
       {upperFolderNo.length > 1 ? (

@@ -37,7 +37,7 @@ function FolderTable({ folder, files }: FolderTableProps) {
   const downloadFiles = useCallback(() => {}, []);
 
   // 파일 삭제
-  const handleDelete = async () => {
+  const handleDelete = useCallback(async () => {
     open({
       title: "정말로 삭제하시겠습니까?",
       confirmText: "삭제",
@@ -50,7 +50,7 @@ function FolderTable({ folder, files }: FolderTableProps) {
     });
 
     console.log("selectFiles", selectFiles);
-  };
+  }, [open, queryClient, selectFiles, selectFolders]);
 
   return (
     <div css={layoutStyle}>
@@ -58,7 +58,9 @@ function FolderTable({ folder, files }: FolderTableProps) {
         <Flex justify="space-between">
           <Flex gap={spacing.md}>
             <NewFolder folder={folder} />
-            <Button size="xs">다운로드</Button>
+            <Button size="xs" onClick={downloadFiles} disabled={selectFiles.length === 0 && selectFolders.length === 0}>
+              다운로드
+            </Button>
             <Button onClick={handleDelete} size="xs" disabled={selectFiles.length === 0 && selectFolders.length === 0}>
               삭제
             </Button>
