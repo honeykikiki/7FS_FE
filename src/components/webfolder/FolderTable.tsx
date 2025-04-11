@@ -1,37 +1,70 @@
-import { Dispatch, SetStateAction, useState } from "react";
+import { useCallback, useState } from "react";
 import Button from "@components/shared/Button";
 import Flex from "@components/shared/Flex";
 import Selected, { itemListProps } from "@components/shared/Selected";
 import Spacing from "@components/shared/Spacing";
-import MyText from "@components/shared/Text";
 import { css } from "@emotion/react";
 import { colors } from "@styles/colorPlatte";
 import { spacing } from "@styles/spacingPalette";
+import { useQueryClient } from "@tanstack/react-query";
+import { useSetRecoilState } from "recoil";
+import { useAlertContext } from "src/context/AlertContext";
 import { WebFolder, WebFolderFile } from "src/models/webFolder";
+import { deleteFiles, deleteFolders } from "src/remote/folder";
+import { folderListState } from "src/store/atom/folder";
+import Folder from "./Folder";
 import NewFolder from "./NewFolder";
 import WebFile from "./WebFile";
 
 interface FolderTableProps {
-  upperFolderNo: number[];
-  setUpperFolderNo: Dispatch<SetStateAction<number[]>>;
+  // upperFolderNo: number[];
+  // setUpperFolderNo: Dispatch<SetStateAction<number[]>>;
   folder?: WebFolder[];
   files?: WebFolderFile[];
 }
 
-function FolderTable({ upperFolderNo, setUpperFolderNo, folder, files }: FolderTableProps) {
+function FolderTable({ folder, files }: FolderTableProps) {
+  const queryClient = useQueryClient();
+  const { open } = useAlertContext();
+
+  const setUpperFolderNo = useSetRecoilState(folderListState);
   const [select, setSelect] = useState<itemListProps>({ key: "20개씩", value: 20 });
+
+  const [selectFolders, setSelectFolders] = useState<WebFolder[]>([]);
+  const [selectFiles, setSelectFiles] = useState<WebFolderFile[]>([]);
+
+  // 파일 다운로드
+  const downloadFiles = useCallback(() => {}, []);
+
+  // 파일 삭제
+  const handleDelete = async () => {
+    open({
+      title: "정말로 삭제하시겠습니까?",
+      confirmText: "삭제",
+      onConfirmClick: async () => {
+        await deleteFiles(selectFiles);
+        await deleteFolders(selectFolders);
+        queryClient.invalidateQueries({ queryKey: ["folder"] });
+      },
+    });
+
+    console.log("selectFiles", selectFiles);
+  };
 
   return (
     <div css={layoutStyle}>
       <main css={mainStyle}>
         <Flex justify="space-between">
           <Flex gap={spacing.md}>
-            <NewFolder upperFolderNo={upperFolderNo} />
-            <Button>다운로드</Button>
-            <Button>복사</Button>
-            <Button>삭제</Button>
-            <Button>이동</Button>
-            <Button onClick={() => setUpperFolderNo([1])}>처음으로</Button>
+            <NewFolder folder={folder} />
+            <Button size="xs">다운로드</Button>
+            <Button onClick={handleDelete} size="xs">
+              삭제
+            </Button>
+            <Button size="xs">이동</Button>
+            <Button size="xs" onClick={() => setUpperFolderNo([1])}>
+              처음으로
+            </Button>
           </Flex>
           <Selected
             title="20개씩"
@@ -54,47 +87,13 @@ function FolderTable({ upperFolderNo, setUpperFolderNo, folder, files }: FolderT
             </tr>
           </thead>
           <tbody>
-            {/* 폴더 내부 인 경우 */}
-            {upperFolderNo.length > 1 ? (
-              <tr
-                css={css`
-                  cursor: pointer;
-                `}
-                onClick={() => {
-                  const newUpperFolderNo = [...upperFolderNo.slice(0, -1)];
-                  setUpperFolderNo(newUpperFolderNo);
-                }}
-              >
-                <td></td>
-                <td colSpan={5}>
-                  <MyText>...상위폴더</MyText>
-                </td>
-              </tr>
-            ) : null}
+            {/* 폴더 */}
+            {folder && <Folder selectFolders={selectFolders} setSelectFolders={setSelectFolders} folder={folder} />}
 
-            {/* 폴더 인 경우 */}
-            {folder?.map((item) => (
-              <tr
-                css={css`
-                  cursor: pointer;
-                `}
-                key={item.folderNo}
-                onClick={() => {
-                  if (upperFolderNo.includes(item.folderNo)) return;
-
-                  setUpperFolderNo((prevList) => [...prevList, item.folderNo]);
-                  // 이전 상위 폴더로 가기
-                }}
-              >
-                <td>📁</td>
-                <td colSpan={5}>
-                  <MyText> {item.folderNm}</MyText>
-                </td>
-              </tr>
+            {/* 파일들 */}
+            {files?.map((file) => (
+              <WebFile selectFile={selectFiles} setSelectFile={setSelectFiles} key={file.atchFileNo} file={file} />
             ))}
-
-            {files?.map((file) => <WebFile key={file.atchFileNo} {...file} />)}
-            {/* 추가 행들 */}
           </tbody>
         </table>
       </main>

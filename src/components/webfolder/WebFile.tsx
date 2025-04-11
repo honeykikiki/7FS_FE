@@ -1,3 +1,4 @@
+import { Dispatch, SetStateAction } from "react";
 import Button from "@components/shared/Button";
 import Flex from "@components/shared/Flex";
 import InputCheckbox from "@components/shared/InputCheckBox";
@@ -7,11 +8,28 @@ import { WebFolderFile } from "src/models/webFolder";
 import { URL } from "src/remote/axios";
 import dateFormat from "src/utils/dateFormat";
 
-function WebFile(file: WebFolderFile) {
+interface WebFileProps {
+  file: WebFolderFile;
+  selectFile: WebFolderFile[];
+  setSelectFile: Dispatch<SetStateAction<WebFolderFile[]>>;
+}
+
+function WebFile({ file, selectFile, setSelectFile }: WebFileProps) {
+  const checked = selectFile.includes(file);
+
   return (
     <tr>
-      <td>
-        <InputCheckbox />
+      <td
+        onClick={() => {
+          if (checked) {
+            setSelectFile(selectFile.filter((prev) => prev !== file));
+            return;
+          }
+
+          setSelectFile((prev) => [...prev, file]);
+        }}
+      >
+        <InputCheckbox checked={checked} />
       </td>
       <td>
         <MyText typography="t6" bEllipsis={true}>

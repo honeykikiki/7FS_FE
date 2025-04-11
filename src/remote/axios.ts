@@ -36,7 +36,9 @@ apiClient.interceptors.response.use(
   async (error) => {
     const hasRedirected = localStorage.getItem("hasRedirected") === "true";
 
-    if (hasRedirected === true && error.response?.status === 403) {
+    console.log(error.response?.status);
+
+    if ((hasRedirected === true && error.response?.status === 403) || error.response?.status === 302) {
       localStorage.setItem("hasRedirected", "false");
       window.location.href = "/auth/login";
     }

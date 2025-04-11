@@ -7,29 +7,23 @@ import { css } from "@emotion/react";
 import { colors } from "@styles/colorPlatte";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthContext } from "src/context/AuthContext";
-import { WebFolder } from "src/models/webFolder";
+import { insertFiles } from "src/remote/folder";
 import FileUploadModal from "./FileUploadModal";
 
-interface FolderSideProps {
-  folder?: WebFolder[];
-}
-
-function FolderSide({ folder }: FolderSideProps) {
+function FolderSide() {
   const queryClient = useQueryClient();
   const { emp } = useAuthContext();
   const [showUploadModal, setShowUploadModal] = useState(false);
 
   return (
     <Flex direction="column" css={sidebarStyle}>
-      {/*  현재 바라보고 있는 폴더 하위 폴더 선택만 가능했음 */}
-      {/* 현재 폴더는 선택이 불가능 함 */}
       {showUploadModal && (
         <FileUploadModal
-          folderList={folder ?? []}
+          // currentFolder
           onUpload={async (files, folder) => {
-            console.log("업로드할 파일:", files);
-            console.log("대상 폴더:", folder);
-            // await insertFiles(files, folder);
+            await insertFiles(files, folder);
+            console.log("??");
+
             queryClient.invalidateQueries({ queryKey: ["folder"] });
           }}
           onClose={() => setShowUploadModal(false)}

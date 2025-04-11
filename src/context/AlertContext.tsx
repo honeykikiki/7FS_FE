@@ -31,8 +31,10 @@ export function AlertContextProvider({ children }: { children: React.ReactNode }
 
       setAlertState({
         ...options,
-        onConfirmClick: () => {
-          const result = onConfirmClick?.();
+        onConfirmClick: async () => {
+          // 비동기인 경우가 있어서 await를 추가함
+          const result = await onConfirmClick?.();
+
           if (result) return;
           close();
         },

@@ -2,53 +2,92 @@ import { WebFolder, WebFolderFile } from "src/models/webFolder";
 import apiClient from "./axios";
 
 export const getFolder = async (upperFolderNo: string) => {
-  const { data } = await apiClient.get("/webFolder/list?upperFolderNo=" + upperFolderNo);
+  try {
+    const { data } = await apiClient.get("/webFolder/list?upperFolderNo=" + upperFolderNo);
 
-  return {
-    folder: data.folder as WebFolder[],
-    files: data.file as WebFolderFile[],
-  };
+    return {
+      folder: data.folder as WebFolder[],
+      files: data.file as WebFolderFile[],
+    };
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const downLoadFile = async (filePath: string) => {
-  const { data } = await apiClient.get("/download?fileName=" + filePath);
+  try {
+    const { data } = await apiClient.get("/download?fileName=" + filePath);
 
-  return data;
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const insertFolder = async (folderNm: string, upperFolderNo: string) => {
-  const formData = new FormData();
-  formData.append("folderNm", folderNm);
-  formData.append("upperFolderNo", upperFolderNo);
-  const { data } = await apiClient.post("/webFolder/insertFolder", formData);
+  try {
+    const formData = new FormData();
+    formData.append("folderNm", folderNm);
+    formData.append("upperFolderNo", upperFolderNo);
+    const { data } = await apiClient.post("/webFolder/insertFolder", formData);
 
-  return {
-    data: data as WebFolder,
-  };
+    return {
+      data: data as WebFolder,
+    };
+  } catch (error) {
+    console.log(error);
+  }
 };
 
 export const insertFiles = async (files: File[], folder: WebFolder) => {
-  const formData = new FormData();
-  files.forEach((file) => {
-    formData.append("uploadFile", file);
-  });
-  // formData.append("webFolderVO", folder);
-  // Object.entries(folder).forEach(([key, value]) => {
-  //   formData.append(key, value);
-  // });
+  try {
+    const formData = new FormData();
+    files.forEach((file) => {
+      formData.append("uploadFile", file);
+    });
+    formData.append("folderNo", folder.folderNo.toString());
+    formData.append("folderPath", folder.folderPath ?? "/");
 
-  formData.append("folderNo", folder.folderNo.toString());
-  formData.append("folderPath", folder.folderPath);
+    const { data } = await apiClient.post("/webFolder/insertFiles", formData, {
+      headers: {
+        "Content-Type": "multipart/form-data",
+      },
+    });
 
-  // // for (const [key, value] of formData.entries()) {
-  // //   console.log(`${key}:`, value);
-  // // }
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
+};
 
-  // return;
+export const getFolderList = async () => {
+  try {
+    const { data } = await apiClient.get("/webFolder/folderList");
 
-  const data = await apiClient.post("/webFolder/insertFiles", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+    return {
+      folderList: data.folderList as WebFolder[],
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteFiles = async (webFolderFiles: WebFolderFile[]) => {
+  try {
+    const { data } = await apiClient.post("/webFolder/deleteFiles", webFolderFiles);
+    return {
+      data,
+    };
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const deleteFolders = async (webFolder: WebFolder[]) => {
+  try {
+    const { data } = await apiClient.post("/webFolder/deleteFolders", webFolder);
+    return data;
+  } catch (error) {
+    console.log(error);
+  }
 };

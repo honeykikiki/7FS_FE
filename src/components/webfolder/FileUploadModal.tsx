@@ -1,15 +1,19 @@
-import React, { useRef, useState } from "react";
+import React, { useCallback, useRef, useState } from "react";
 import Button from "@components/shared/Button";
 import Dimmed from "@components/shared/Dimmed";
 import Flex from "@components/shared/Flex";
+import InputSelect from "@components/shared/inputSelect";
 import Spacing from "@components/shared/Spacing";
 import MyText from "@components/shared/Text";
 import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { colors } from "@styles/colorPlatte";
 import { spacing } from "@styles/spacingPalette";
+import { useRecoilValue } from "recoil";
 import { WebFolder } from "src/models/webFolder";
+import { folderListState } from "src/store/atom/folder";
 import addDelimiter from "src/utils/addDelimiter";
+import useFolderList from "./hooks/useFolderList";
 
 interface FileInfo {
   id: number;
@@ -18,55 +22,67 @@ interface FileInfo {
 }
 
 interface Props {
-  folderList: WebFolder[];
+  // folderList: WebFolder[];
   onClose: () => void;
   onUpload: (files: File[], folder: WebFolder) => void;
 }
 
-const FileUploadModal: React.FC<Props> = ({ folderList, onClose, onUpload }) => {
+const FileUploadModal: React.FC<Props> = ({ onClose, onUpload }) => {
+  const upperFolderNo = useRecoilValue(folderListState);
+  const { data } = useFolderList();
   const inputRef = useRef<HTMLInputElement>(null);
-  const [selectedFolder, setSelectedFolder] = useState(folderList[0]);
+  // 초기에는 내가 보고 있는 폴더명 추가
+  const [selectedFolder, setSelectedFolder] = useState(
+    data?.folderList.filter((item) => item.folderNo === upperFolderNo[upperFolderNo.length - 1])[0],
+  );
+
   const [files, setFiles] = useState<FileInfo[]>([]);
 
-  const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
-    const uploadFile = e.target.files;
-    if (files.length + (uploadFile?.length ?? 0) > 10) {
-      return;
-    }
+  const handleFileChange = useCallback(
+    (e: React.ChangeEvent<HTMLInputElement>) => {
+      const uploadFile = e.target.files;
+      if (files.length + (uploadFile?.length ?? 0) > 10) {
+        return;
+      }
 
-    if (uploadFile) {
-      const newFiles = Array.from(uploadFile).map((file, idx) => ({
-        id: files.length + idx,
-        file,
-        status: "ready" as const,
-      }));
+      if (uploadFile) {
+        const newFiles = Array.from(uploadFile).map((file, idx) => ({
+          id: files.length + idx,
+          file,
+          status: "ready" as const,
+        }));
 
-      setFiles([...files, ...newFiles]);
-    }
-  };
+        setFiles([...files, ...newFiles]);
+      }
+    },
+    [files],
+  );
 
-  const handleDelete = (id: number) => {
-    setFiles(files.filter((file) => id !== file.id));
-  };
+  const handleDelete = useCallback(
+    (id: number) => {
+      setFiles(files.filter((file) => id !== file.id));
+    },
+    [files],
+  );
 
-  const getFileExtension = (fileName: string) => {
+  const getFileExtension = useCallback((fileName: string) => {
     return fileName.split(".").pop() || "";
-  };
+  }, []);
 
-  const formatBytes = (bytes: number) => {
+  const formatBytes = useCallback((bytes: number) => {
     return bytes < 1024 ? `${bytes}B` : `${(bytes / 1024).toFixed(1)}KB`;
-  };
+  }, []);
 
   const handleUpload = () => {
+    if (selectedFolder === null || selectedFolder === undefined) return;
+
     onUpload(
       files.map((f) => f.file),
       selectedFolder,
     );
 
-    // onClose();
+    onClose();
   };
-
-  console.log(selectedFolder);
 
   return (
     <Dimmed onClick={onClose}>
@@ -81,19 +97,17 @@ const FileUploadModal: React.FC<Props> = ({ folderList, onClose, onUpload }) => 
         <Spacing size={1} backgroundColor="grayBorder" />
         <Spacing size="md" />
 
-        <Flex>
+        <Flex align="center">
           <MyText typography="t6">대상 폴더 선택</MyText>
           <Spacing size="md" direction="horizontal" />
-          <select
+          <InputSelect
             value={selectedFolder?.folderNo ?? 0}
             onChange={(e) =>
-              setSelectedFolder(
-                folderList.find((folder) => folder.folderNo === Number(e.target.value)) ?? folderList[0],
-              )
+              setSelectedFolder(data?.folderList.find((folder) => folder.folderNo === Number(e.target.value)))
             }
           >
-            {folderList.length > 0 ? (
-              folderList.map((folder) => (
+            {data !== null && data !== undefined && data?.folderList.length > 0 ? (
+              data?.folderList.map((folder) => (
                 <option key={folder.folderNo} value={folder.folderNo}>
                   {folder.folderNm}
                 </option>
@@ -101,7 +115,7 @@ const FileUploadModal: React.FC<Props> = ({ folderList, onClose, onUpload }) => 
             ) : (
               <option>현재폴더</option>
             )}
-          </select>
+          </InputSelect>
         </Flex>
 
         <Spacing size="md" />
