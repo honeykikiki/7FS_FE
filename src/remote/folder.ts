@@ -94,3 +94,53 @@ export const deleteFolders = async (webFolder: WebFolder[]) => {
     console.log(error);
   }
 };
+
+export const getDownLoadFolder = async (folderNo: number, folderName: string) => {
+  try {
+    const data = await apiClient.get("/webFolder/download-folder?", {
+      params: {
+        folderNo: folderNo.toString(),
+        folderName: folderName,
+      },
+      responseType: "blob",
+    });
+
+    const blob = new Blob([data.data], { type: "application/zip" });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.setAttribute("download", `${folderName}.zip`);
+    document.body.append(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.log(error);
+  }
+};
+
+export const getDownLoadFile = async (fileNoList: number[], folderName: string) => {
+  try {
+    const params = new URLSearchParams();
+    params.append("folderName", folderName);
+    fileNoList.forEach((item) => params.append("fileNoList", item.toString()));
+
+    console.log(params);
+
+    const data = await apiClient.get("/webFolder/download-file?" + params, {
+      responseType: "blob",
+    });
+
+    const blob = new Blob([data.data], { type: "application/zip" });
+    const url = window.URL.createObjectURL(blob);
+    const link = document.createElement("a");
+
+    link.href = url;
+    link.setAttribute("download", `${folderName}.zip`);
+    document.body.append(link);
+    link.click();
+    link.remove();
+  } catch (error) {
+    console.log(error);
+  }
+};

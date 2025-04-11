@@ -7,18 +7,16 @@ import { css } from "@emotion/react";
 import { colors } from "@styles/colorPlatte";
 import { spacing } from "@styles/spacingPalette";
 import { useQueryClient } from "@tanstack/react-query";
-import { useSetRecoilState } from "recoil";
+import { useRecoilValue, useSetRecoilState } from "recoil";
 import { useAlertContext } from "src/context/AlertContext";
 import { WebFolder, WebFolderFile } from "src/models/webFolder";
-import { deleteFiles, deleteFolders } from "src/remote/folder";
-import { folderListState } from "src/store/atom/folder";
+import { deleteFiles, deleteFolders, getDownLoadFile, getDownLoadFolder } from "src/remote/folder";
+import { folderListState, upperFolderNameState } from "src/store/atom/folder";
 import Folder from "./Folder";
 import NewFolder from "./NewFolder";
 import WebFile from "./WebFile";
 
 interface FolderTableProps {
-  // upperFolderNo: number[];
-  // setUpperFolderNo: Dispatch<SetStateAction<number[]>>;
   folder?: WebFolder[];
   files?: WebFolderFile[];
 }
@@ -28,13 +26,26 @@ function FolderTable({ folder, files }: FolderTableProps) {
   const { open } = useAlertContext();
 
   const setUpperFolderNo = useSetRecoilState(folderListState);
+  const folderName = useRecoilValue(upperFolderNameState);
   const [select, setSelect] = useState<itemListProps>({ key: "20개씩", value: 20 });
 
   const [selectFolders, setSelectFolders] = useState<WebFolder[]>([]);
   const [selectFiles, setSelectFiles] = useState<WebFolderFile[]>([]);
 
   // 파일 다운로드
-  const downloadFiles = useCallback(() => {}, []);
+  const downloadFiles = useCallback(() => {
+    if (selectFolders.length > 0) {
+      selectFolders.forEach((item) => {
+        getDownLoadFolder(item.folderNo, item.folderNm);
+      });
+    }
+
+    if (selectFiles.length > 0) {
+      const fileNoList = selectFiles.map((item) => item.atchFileNo);
+
+      getDownLoadFile(fileNoList, folderName[folderName.length - 1]);
+    }
+  }, [folderName, selectFiles, selectFolders]);
 
   // 파일 삭제
   const handleDelete = useCallback(async () => {
