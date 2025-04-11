@@ -33,10 +33,10 @@ apiClient.interceptors.response.use(
     // 응답 데이터 처리
     return response;
   },
-  async (error) => {
+  (error) => {
     const hasRedirected = localStorage.getItem("hasRedirected") === "true";
-
-    console.log(error.response?.status);
+    // 네트워크 에러인 경우
+    console.log("error", error);
 
     if ((hasRedirected === true && error.response?.status === 403) || error.response?.status === 302) {
       localStorage.setItem("hasRedirected", "false");

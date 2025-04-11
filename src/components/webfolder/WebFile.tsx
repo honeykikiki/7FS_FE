@@ -29,7 +29,7 @@ function WebFile({ file, selectFile, setSelectFile }: WebFileProps) {
           setSelectFile((prev) => [...prev, file]);
         }}
       >
-        <InputCheckbox checked={checked} />
+        <InputCheckbox checked={checked} readOnly />
       </td>
       <td>
         <MyText typography="t6" bEllipsis={true}>

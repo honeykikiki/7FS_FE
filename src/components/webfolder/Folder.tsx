@@ -64,7 +64,7 @@ function Folder({ folder, selectFolders, setSelectFolders }: FolderProps) {
                 setSelectFolders((prev) => [...prev, folder]);
               }}
             >
-              <InputCheckbox checked={checked} />
+              <InputCheckbox checked={checked} readOnly />
             </td>
             <td colSpan={5}>
               <MyText>📁 {folder.folderNm}</MyText>

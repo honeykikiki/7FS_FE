@@ -3,9 +3,12 @@ import apiClient from "./axios";
 
 export const getFolder = async (upperFolderNo: string) => {
   try {
+    console.log(upperFolderNo);
+
     const { data } = await apiClient.get("/webFolder/list?upperFolderNo=" + upperFolderNo);
 
     return {
+      totalVolume: data.totalVolume as number,
       folder: data.folder as WebFolder[],
       files: data.file as WebFolderFile[],
     };

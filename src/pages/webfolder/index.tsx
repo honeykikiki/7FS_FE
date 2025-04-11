@@ -16,7 +16,7 @@ function DataRoom() {
   return (
     <Frame title="자료실">
       <Flex>
-        <FolderSide />
+        <FolderSide totalVolume={data?.totalVolume ?? 0} />
         <Spacing size="lg" direction="horizontal" />
         <Flex direction="column" css={wrapperStyle}>
           {/* 자료 목록 테이블 */}

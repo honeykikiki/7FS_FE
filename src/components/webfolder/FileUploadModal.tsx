@@ -74,6 +74,8 @@ const FileUploadModal: React.FC<Props> = ({ onClose, onUpload }) => {
   }, []);
 
   const handleUpload = () => {
+    console.log(selectedFolder);
+
     if (selectedFolder === null || selectedFolder === undefined) return;
 
     onUpload(
@@ -121,7 +123,6 @@ const FileUploadModal: React.FC<Props> = ({ onClose, onUpload }) => {
         <Spacing size="md" />
         <Flex gap={spacing.md}>
           <Button onClick={() => inputRef.current?.click()}>파일 추가</Button>
-
           <input type="file" ref={inputRef} hidden multiple onChange={handleFileChange} />
         </Flex>
 

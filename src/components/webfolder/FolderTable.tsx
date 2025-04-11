@@ -41,9 +41,10 @@ function FolderTable({ folder, files }: FolderTableProps) {
     open({
       title: "정말로 삭제하시겠습니까?",
       confirmText: "삭제",
+      description: "폴더 삭제시 내부 파일도 같이 삭제됩니다.",
       onConfirmClick: async () => {
-        await deleteFiles(selectFiles);
-        await deleteFolders(selectFolders);
+        if (selectFiles.length > 0) await deleteFiles(selectFiles);
+        if (selectFolders.length > 0) await deleteFolders(selectFolders);
         queryClient.invalidateQueries({ queryKey: ["folder"] });
       },
     });
@@ -58,7 +59,7 @@ function FolderTable({ folder, files }: FolderTableProps) {
           <Flex gap={spacing.md}>
             <NewFolder folder={folder} />
             <Button size="xs">다운로드</Button>
-            <Button onClick={handleDelete} size="xs">
+            <Button onClick={handleDelete} size="xs" disabled={selectFiles.length === 0 && selectFolders.length === 0}>
               삭제
             </Button>
             <Button size="xs">이동</Button>

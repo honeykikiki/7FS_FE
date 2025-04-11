@@ -8,9 +8,14 @@ import { colors } from "@styles/colorPlatte";
 import { useQueryClient } from "@tanstack/react-query";
 import { useAuthContext } from "src/context/AuthContext";
 import { insertFiles } from "src/remote/folder";
+import formatFancySize from "src/utils/formatFancySize";
 import FileUploadModal from "./FileUploadModal";
 
-function FolderSide() {
+interface FolderSideProps {
+  totalVolume: number;
+}
+
+function FolderSide({ totalVolume }: FolderSideProps) {
   const queryClient = useQueryClient();
   const { emp } = useAuthContext();
   const [showUploadModal, setShowUploadModal] = useState(false);
@@ -71,15 +76,19 @@ function FolderSide() {
       <Spacing size="md" />
       <Flex direction="column">
         <MyText hoverColor="primaryHover">전사 자료실 용량</MyText>
-
-        <progress value={84.4} max={100} style={{ width: "100%" }} color={colors.primary}></progress>
-        <small>10.0GB 중 84.4MB 사용</small>
+        <progress
+          value={Math.ceil((totalVolume / (10 * 1024 * 1024 * 1024)) * 100)}
+          max={100}
+          style={{ width: "100%" }}
+          color={colors.primary}
+        ></progress>
+        <Spacing size="xs" />
+        {}
+        <small>10.0GB 중 {formatFancySize(totalVolume)} 사용</small>
       </Flex>
     </Flex>
   );
 }
-
-export default FolderSide;
 
 const folderTreeStyle = css`
   margin-top: 1rem;
@@ -110,3 +119,5 @@ const sidebarStyle = css`
   flex-direction: column;
   border-radius: 10px;
 `;
+
+export default FolderSide;
