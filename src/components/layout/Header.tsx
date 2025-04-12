@@ -8,6 +8,7 @@ import { spacing } from "@styles/spacingPalette";
 import { useRouter } from "next/router";
 import { useAuthContext } from "src/context/AuthContext";
 import { useBottomSheetContext } from "src/context/BottomSheetContext";
+import apiClient from "src/remote/axios";
 
 interface HeaderProps {
   title: string;
@@ -32,9 +33,11 @@ export default function Header({ title }: HeaderProps) {
               open({
                 body: (
                   <UserMenu
-                    onLogout={() => {
+                    onLogout={async () => {
+                      await apiClient.post("/api/token/logout");
                       setEmp(null);
                       router.replace("/auth/login");
+                      // 로그 아웃
                     }}
                   />
                 ),
