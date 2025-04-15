@@ -1,4 +1,5 @@
 import { atom } from "recoil";
+import { StorageType } from "src/models/webFolder";
 
 const folderListDefaultValue = [1];
 
@@ -9,6 +10,7 @@ export const folderListState = atom<Item>({
   default: folderListDefaultValue,
 });
 
+// ---------------
 const upperFolderNameDefaultValue = ["루트"];
 
 type Item2 = typeof upperFolderNameDefaultValue;
@@ -16,4 +18,11 @@ type Item2 = typeof upperFolderNameDefaultValue;
 export const upperFolderNameState = atom<Item2>({
   key: "folder/upperFolderName",
   default: upperFolderNameDefaultValue,
+});
+
+// -----
+
+export const selectDataRoomState = atom<StorageType>({
+  key: "folder/selectDataRoomState",
+  default: StorageType.COMPANY,
 });

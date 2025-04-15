@@ -10,8 +10,9 @@ import styled from "@emotion/styled";
 import { colors } from "@styles/colorPlatte";
 import { spacing } from "@styles/spacingPalette";
 import { useRecoilValue } from "recoil";
+import { useAuthContext } from "src/context/AuthContext";
 import { WebFolder } from "src/models/webFolder";
-import { folderListState } from "src/store/atom/folder";
+import { folderListState, selectDataRoomState } from "src/store/atom/folder";
 import addDelimiter from "src/utils/addDelimiter";
 import useFolderList from "./hooks/useFolderList";
 
@@ -28,7 +29,9 @@ interface FileUploadModalProps {
 
 const FileUploadModal = ({ onClose, onUpload }: FileUploadModalProps) => {
   const upperFolderNo = useRecoilValue(folderListState);
-  const { data } = useFolderList();
+  const selectDataRoom = useRecoilValue(selectDataRoomState);
+  const { emp } = useAuthContext();
+  const { data } = useFolderList(selectDataRoom, emp?.deptCode ?? "");
   const inputRef = useRef<HTMLInputElement>(null);
   // 초기에는 내가 보고 있는 폴더명 추가
   const [selectedFolder, setSelectedFolder] = useState<WebFolder>();

@@ -27,7 +27,7 @@ function FolderTable({ folder, files }: FolderTableProps) {
 
   const setUpperFolderNo = useSetRecoilState(folderListState);
   const folderName = useRecoilValue(upperFolderNameState);
-  const [select, setSelect] = useState<itemListProps>({ key: "20개씩", value: 20 });
+  const [select, setSelect] = useState<itemListProps>({ key: "20개씩", value: 20 }); // 아직 개발 안됨
 
   const [selectFolders, setSelectFolders] = useState<WebFolder[]>([]);
   const [selectFiles, setSelectFiles] = useState<WebFolderFile[]>([]);
@@ -137,7 +137,7 @@ const tableStyle = css`
 
   th,
   td {
-    padding: 1rem;
+    padding: 10px 15px;
     border-bottom: 1px solid ${colors.grayBorder};
     font-size: 0.875rem;
   }

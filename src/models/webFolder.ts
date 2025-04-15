@@ -1,5 +1,11 @@
 import { AttachFile } from "./attachFile";
 
+export enum StorageType {
+  COMPANY = 0, // 전사 자료실
+  DEPARTMENT = 1, // 부서 자료실
+  PERSONAL = 2, // 개인 자료실
+}
+
 export interface WebFolder {
   folderPath: string;
   folderTy: string;

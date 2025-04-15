@@ -1,11 +1,14 @@
-import { WebFolder, WebFolderFile } from "src/models/webFolder";
+import { StorageType, WebFolder, WebFolderFile } from "src/models/webFolder";
 import apiClient from "./axios";
 
-export const getFolder = async (upperFolderNo: string) => {
+export const getFolder = async (upperFolderNo: string, selectDataRoom: StorageType, deptCode: string) => {
   try {
-    console.log(upperFolderNo);
+    const param = new URLSearchParams();
+    param.append("upperFolderNo", upperFolderNo);
+    param.append("folderTy", selectDataRoom.toString());
+    param.append("deptCode", deptCode);
 
-    const { data } = await apiClient.get("/webFolder/list?upperFolderNo=" + upperFolderNo);
+    const { data } = await apiClient.get("/api/webFolder/list?" + param);
 
     return {
       totalVolume: data.totalVolume as number,
@@ -32,7 +35,7 @@ export const insertFolder = async (folderNm: string, upperFolderNo: string) => {
     const formData = new FormData();
     formData.append("folderNm", folderNm);
     formData.append("upperFolderNo", upperFolderNo);
-    const { data } = await apiClient.post("/webFolder/insertFolder", formData);
+    const { data } = await apiClient.post("/api/webFolder/insertFolder", formData);
 
     return {
       data: data as WebFolder,
@@ -51,7 +54,7 @@ export const insertFiles = async (files: File[], folder: WebFolder) => {
     formData.append("folderNo", folder.folderNo.toString());
     formData.append("folderPath", folder.folderPath ?? "/");
 
-    const { data } = await apiClient.post("/webFolder/insertFiles", formData, {
+    const { data } = await apiClient.post("/api/webFolder/insertFiles", formData, {
       headers: {
         "Content-Type": "multipart/form-data",
       },
@@ -63,9 +66,13 @@ export const insertFiles = async (files: File[], folder: WebFolder) => {
   }
 };
 
-export const getFolderList = async () => {
+export const getFolderList = async (selectDataRoom: StorageType, deptCode: string) => {
+  const param = new URLSearchParams();
+  param.append("folderTy", selectDataRoom.toString());
+  param.append("deptCode", deptCode);
+
   try {
-    const { data } = await apiClient.get("/webFolder/folderList");
+    const { data } = await apiClient.get("/api/webFolder/folderList?" + param);
 
     return {
       folderList: data.folderList as WebFolder[],
@@ -77,7 +84,7 @@ export const getFolderList = async () => {
 
 export const deleteFiles = async (webFolderFiles: WebFolderFile[]) => {
   try {
-    const { data } = await apiClient.post("/webFolder/deleteFiles", webFolderFiles);
+    const { data } = await apiClient.post("/api/webFolder/deleteFiles", webFolderFiles);
     return {
       data,
     };
@@ -88,7 +95,7 @@ export const deleteFiles = async (webFolderFiles: WebFolderFile[]) => {
 
 export const deleteFolders = async (webFolder: WebFolder[]) => {
   try {
-    const { data } = await apiClient.post("/webFolder/deleteFolders", webFolder);
+    const { data } = await apiClient.post("/api/webFolder/deleteFolders", webFolder);
     return data;
   } catch (error) {
     console.log(error);
@@ -97,7 +104,7 @@ export const deleteFolders = async (webFolder: WebFolder[]) => {
 
 export const getDownLoadFolder = async (folderNo: number, folderName: string) => {
   try {
-    const data = await apiClient.get("/webFolder/download-folder?", {
+    const data = await apiClient.get("/api/webFolder/download-folder?", {
       params: {
         folderNo: folderNo.toString(),
         folderName: folderName,
@@ -127,7 +134,7 @@ export const getDownLoadFile = async (fileNoList: number[], folderName: string) 
 
     console.log(params);
 
-    const data = await apiClient.get("/webFolder/download-file?" + params, {
+    const data = await apiClient.get("/api/webFolder/download-file?" + params, {
       responseType: "blob",
     });
 
@@ -143,4 +150,29 @@ export const getDownLoadFile = async (fileNoList: number[], folderName: string) 
   } catch (error) {
     console.log(error);
   }
+};
+
+export const updateFileMove = async (targetFolder: WebFolder, moveFile: WebFolderFile) => {
+  const formData = new FormData();
+  formData.append("targetFolder", new Blob([JSON.stringify(targetFolder)], { type: "application/json;charset=utf-8" }));
+  formData.append("moveFile", new Blob([JSON.stringify(moveFile)], { type: "application/json;charset=utf-8" }));
+
+  const { data } = await apiClient.post("/api/webFolder/file-move", formData, {
+    headers: {
+      "Content-Type": "multipart/form-data",
+    },
+  });
+
+  return data;
+};
+
+export const updateFolderMove = async (targetFolder: WebFolder, moveFolder: WebFolder) => {
+  const formData = new FormData();
+  formData.append("targetFolder", new Blob([JSON.stringify(targetFolder)], { type: "application/json" }));
+  formData.append("moveFolder", new Blob([JSON.stringify(moveFolder)], { type: "application/json" }));
+
+  const { data } = await apiClient.post("/api/webFolder/folder-move", formData);
+  console.log(data);
+
+  return data;
 };

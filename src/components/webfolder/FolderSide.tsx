@@ -6,8 +6,10 @@ import MyText from "@components/shared/Text";
 import { css } from "@emotion/react";
 import { colors } from "@styles/colorPlatte";
 import { useQueryClient } from "@tanstack/react-query";
-import { useAuthContext } from "src/context/AuthContext";
+import { useRecoilState } from "recoil";
+import { StorageType } from "src/models/webFolder";
 import { insertFiles } from "src/remote/folder";
+import { selectDataRoomState } from "src/store/atom/folder";
 import formatFancySize from "src/utils/formatFancySize";
 import FileUploadModal from "./FileUploadModal";
 
@@ -17,8 +19,12 @@ interface FolderSideProps {
 
 function FolderSide({ totalVolume }: FolderSideProps) {
   const queryClient = useQueryClient();
-  const { emp } = useAuthContext();
   const [showUploadModal, setShowUploadModal] = useState(false);
+  const [selectDataRoom, setSelectDataRoom] = useRecoilState(selectDataRoomState);
+
+  const handleSelectDataRoom = (dataRoomName: StorageType) => {
+    setSelectDataRoom(dataRoomName);
+  };
 
   return (
     <Flex direction="column" css={sidebarStyle}>
@@ -52,22 +58,37 @@ function FolderSide({ totalVolume }: FolderSideProps) {
         </MyText>
         <ul>
           <li>
-            <MyText hoverColor="textColor">전사 자료실</MyText>
+            <MyText
+              onClick={() => handleSelectDataRoom(StorageType.COMPANY)}
+              color={selectDataRoom === StorageType.COMPANY ? "textColor" : "textMutedColor"}
+              hoverColor="textColor"
+            >
+              전사 자료실
+            </MyText>
           </li>
           <li>
-            <MyText color="textMutedColor" hoverColor="textColor">
+            <MyText
+              onClick={() => handleSelectDataRoom(StorageType.DEPARTMENT)}
+              color={selectDataRoom === StorageType.DEPARTMENT ? "textColor" : "textMutedColor"}
+              hoverColor="textColor"
+            >
               부서 자료실
             </MyText>
           </li>
         </ul>
+
         <Spacing size="md" />
         <MyText typography="t5" fontWeight="500">
           개인 자료실
         </MyText>
         <ul>
           <li>
-            <MyText color="textMutedColor" hoverColor="textColor">
-              {emp?.emplNm} 경영 참고
+            <MyText
+              onClick={() => handleSelectDataRoom(StorageType.PERSONAL)}
+              color={selectDataRoom === StorageType.PERSONAL ? "textColor" : "textMutedColor"}
+              hoverColor="textColor"
+            >
+              개인 자료실
             </MyText>
           </li>
         </ul>

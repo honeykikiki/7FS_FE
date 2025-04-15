@@ -1,16 +1,14 @@
 import axios from "axios";
+import { refreshToken } from "./auth";
 
 // export const url = "http://39.119.222.230:8080/";
 export const URL = "http://localhost/";
+// export const URL = "http://192.168.44.32/"; // 학원용
 
 // axios 인스턴스 생성
 const apiClient = axios.create({
   baseURL: URL, // API 기본 URL 설정
   timeout: 10000, // 요청 타임아웃 설정
-  headers: {
-    // "Content-Type": "application/json",
-    // "X-AUTH-TOKEN": `${localStorage.getItem("X-AUTH-TOKEN")}`,
-  },
   withCredentials: true,
 });
 
@@ -31,17 +29,30 @@ apiClient.interceptors.request.use(
 apiClient.interceptors.response.use(
   (response) => {
     // 응답 데이터 처리
-
     return response;
   },
-  (error) => {
-    const hasRedirected = localStorage.getItem("hasRedirected") === "true";
+  async (error) => {
+    const hasRedirected = (localStorage.getItem("hasRedirected") ?? "true") === "true";
     // 네트워크 에러인 경우
-    console.log("error", error);
+    // console.log("error", error);
+    // console.log("hasRedirected", hasRedirected);
+    // console.log(error.response?.status);
+    // console.log(error.request.responseURL);
+    // console.log(((error.request.responseURL ?? "") as string).includes("/api/token/refresh"));
 
-    if ((hasRedirected === true && error.response?.status === 403) || error.response?.status === 302) {
-      localStorage.setItem("hasRedirected", "false");
-      window.location.href = "/auth/login";
+    if (
+      hasRedirected &&
+      error.response?.status === 403 &&
+      !((error.request.responseURL ?? "") as string).includes("/api/token/refresh")
+    ) {
+      const accessToken = await refreshToken();
+      if (accessToken !== null && accessToken !== "") {
+        console.log("success");
+        return apiClient(error.config);
+      } else {
+        localStorage.setItem("hasRedirected", "false");
+        window.location.href = "/auth/login";
+      }
     }
 
     return Promise.reject(error);

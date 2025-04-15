@@ -6,12 +6,15 @@ import FolderTable from "@components/webfolder/FolderTable";
 import useFolder from "@components/webfolder/hooks/useFolder";
 import { css } from "@emotion/react";
 import { useRecoilValue } from "recoil";
-import { folderListState } from "src/store/atom/folder";
+import { useAuthContext } from "src/context/AuthContext";
+import { folderListState, selectDataRoomState } from "src/store/atom/folder";
 
 function DataRoom() {
   const upperFolderNo = useRecoilValue(folderListState);
-  const { data } = useFolder(upperFolderNo);
-  console.log(upperFolderNo);
+  // const [selectDataRoom, setSelectDataRoom] = useState<StorageType>(StorageType.COMPANY);
+  const selectDataRoom = useRecoilValue(selectDataRoomState);
+  const { emp } = useAuthContext();
+  const { data } = useFolder(upperFolderNo, selectDataRoom, emp?.deptCode ?? "");
 
   return (
     <Frame title="자료실">

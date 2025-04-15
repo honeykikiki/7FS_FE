@@ -1,6 +1,7 @@
 import { Dispatch, SetStateAction, createContext, useContext, useEffect, useMemo, useState } from "react";
 import { useRouter } from "next/router";
 import { Employee } from "src/models/employee";
+import { refreshToken } from "src/remote/auth";
 import apiClient from "src/remote/axios";
 
 interface AuthProps {
@@ -31,18 +32,19 @@ export const AuthContextProvider = ({ children }: { children: React.ReactNode })
     } catch (error) {
       // 토큰 있는지 확인 하는 로직
       console.log("invalid 실패");
-      try {
-        await refreshToken();
-      } catch (error) {
+      console.log(error);
+      console.log(1);
+
+      const accessToken = await refreshToken();
+      if (accessToken !== null) {
+        tokenInvalid();
+      } else {
+        console.log(2);
+
         setEmp(null);
         router.push("/auth/login");
       }
     }
-  };
-
-  const refreshToken = async () => {
-    const res = await apiClient.post("/api/token/refresh");
-    return res.data.accessToken;
   };
 
   const tokenLogin = async (username: string, password: string) => {

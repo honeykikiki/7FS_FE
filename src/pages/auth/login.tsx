@@ -20,10 +20,11 @@ function LoginPage() {
 
   useEffect(() => {
     invalid();
-  }, []);
+  }, [emp]);
 
   const invalid = async () => {
     await tokenInvalid();
+
     if (emp !== null) {
       router.push("/");
     }

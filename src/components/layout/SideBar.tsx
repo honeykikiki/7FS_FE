@@ -13,6 +13,7 @@ const sideBar = [
   { link: "/webfolder", title: "자료실", icon: "📁" },
   { link: "/approval", title: "전자결제", icon: "📝" },
   { link: "/board", title: "게사판", icon: "📢" },
+  { link: "/setting", title: "권한 관리", icon: "⚙️" },
 ];
 
 export default function Sidebar() {
