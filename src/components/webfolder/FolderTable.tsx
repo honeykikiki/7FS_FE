@@ -59,8 +59,6 @@ function FolderTable({ folder, files }: FolderTableProps) {
         queryClient.invalidateQueries({ queryKey: ["folder"] });
       },
     });
-
-    console.log("selectFiles", selectFiles);
   }, [open, queryClient, selectFiles, selectFolders]);
 
   return (

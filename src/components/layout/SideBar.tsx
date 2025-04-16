@@ -5,15 +5,16 @@ import { css } from "@emotion/react";
 import styled from "@emotion/styled";
 import { colors } from "@styles/colorPlatte";
 import { spacing } from "@styles/spacingPalette";
+import { boxShadow } from "@styles/utils";
 import Link from "next/link";
 import { useRouter } from "next/router";
 
 const sideBar = [
   { link: "/", title: "홈", icon: "🏠" },
   { link: "/webfolder", title: "자료실", icon: "📁" },
-  { link: "/approval", title: "전자결제", icon: "📝" },
+  // { link: "/approval", title: "전자결제", icon: "📝" },
   { link: "/board", title: "게사판", icon: "📢" },
-  { link: "/setting", title: "권한 관리", icon: "⚙️" },
+  { link: "/org/setting", title: "사원 권한 관리", icon: "⚙️" },
 ];
 
 export default function Sidebar() {
@@ -59,7 +60,8 @@ const SidebarWrapper = styled.aside`
 
   display: flex;
   flex-direction: column;
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+
+  ${boxShadow}
 `;
 
 const NavItem = styled(Link)`

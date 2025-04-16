@@ -2,12 +2,12 @@ import axios from "axios";
 import { refreshToken } from "./auth";
 
 // export const url = "http://39.119.222.230:8080/";
-export const URL = "http://localhost/";
+export const DEFAULT_URL = "http://localhost/";
 // export const URL = "http://192.168.44.32/"; // 학원용
 
 // axios 인스턴스 생성
 const apiClient = axios.create({
-  baseURL: URL, // API 기본 URL 설정
+  baseURL: DEFAULT_URL, // API 기본 URL 설정
   timeout: 10000, // 요청 타임아웃 설정
   withCredentials: true,
 });

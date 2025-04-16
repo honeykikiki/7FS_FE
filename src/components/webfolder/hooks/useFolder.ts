@@ -1,5 +1,5 @@
-import { StorageType } from "@pages/webfolder";
 import { useQuery } from "@tanstack/react-query";
+import { StorageType } from "src/models/webFolder";
 import { getFolder } from "src/remote/folder";
 
 function useFolder(upperFolderNo: number[], selectDataRoom: StorageType, deptCode: string) {

@@ -29,8 +29,9 @@ function NewFolder({ folder }: NewFolderProps) {
 
   const handleConfirm = async () => {
     if (isSubmitting) return; // 중복 방지
+    console.log(folderName.length);
 
-    if (folderName.length === 0) {
+    if (folderName.length <= 1) {
       setHasError({
         error: true,
         helpMessage: "폴더명을 2자 이상 입력해주세요",

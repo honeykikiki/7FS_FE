@@ -5,6 +5,7 @@ import UserMenu from "@components/user/UserMenu";
 import styled from "@emotion/styled";
 import { colors } from "@styles/colorPlatte";
 import { spacing } from "@styles/spacingPalette";
+import { boxShadow } from "@styles/utils";
 import { useRouter } from "next/router";
 import { useAuthContext } from "src/context/AuthContext";
 import { useBottomSheetContext } from "src/context/BottomSheetContext";
@@ -54,7 +55,7 @@ const Container = styled.div`
   top: 0;
   left: 220px;
   width: calc(100% - 220px);
-  box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+  ${boxShadow}
 `;
 
 const HeaderWrapper = styled.header`

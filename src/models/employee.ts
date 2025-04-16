@@ -18,6 +18,7 @@ export interface Employee {
   proflPhotoUrl: string;
   deptCode: string;
   clsfCode: string;
+  clsfCodeNm: string;
 
   deptNm: string;
   posNm: string;

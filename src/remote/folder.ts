@@ -153,25 +153,13 @@ export const getDownLoadFile = async (fileNoList: number[], folderName: string) 
 };
 
 export const updateFileMove = async (targetFolder: WebFolder, moveFile: WebFolderFile) => {
-  const formData = new FormData();
-  formData.append("targetFolder", new Blob([JSON.stringify(targetFolder)], { type: "application/json;charset=utf-8" }));
-  formData.append("moveFile", new Blob([JSON.stringify(moveFile)], { type: "application/json;charset=utf-8" }));
-
-  const { data } = await apiClient.post("/api/webFolder/file-move", formData, {
-    headers: {
-      "Content-Type": "multipart/form-data",
-    },
-  });
+  const { data } = await apiClient.post("/api/webFolder/file-move", { targetFolder, moveFile });
 
   return data;
 };
 
 export const updateFolderMove = async (targetFolder: WebFolder, moveFolder: WebFolder) => {
-  const formData = new FormData();
-  formData.append("targetFolder", new Blob([JSON.stringify(targetFolder)], { type: "application/json" }));
-  formData.append("moveFolder", new Blob([JSON.stringify(moveFolder)], { type: "application/json" }));
-
-  const { data } = await apiClient.post("/api/webFolder/folder-move", formData);
+  const { data } = await apiClient.post("/api/webFolder/folder-move", { targetFolder, moveFolder });
   console.log(data);
 
   return data;
