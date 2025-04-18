@@ -1,17 +1,21 @@
-import { useCallback, useState } from "react";
+import { useCallback } from "react";
 import Button from "@components/shared/Button";
 import Flex from "@components/shared/Flex";
-import Selected, { itemListProps } from "@components/shared/Selected";
 import Spacing from "@components/shared/Spacing";
 import { css } from "@emotion/react";
 import { colors } from "@styles/colorPlatte";
 import { spacing } from "@styles/spacingPalette";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRecoilValue, useSetRecoilState } from "recoil";
+import { useRecoilState, useRecoilValue, useSetRecoilState } from "recoil";
 import { useAlertContext } from "src/context/AlertContext";
 import { WebFolder, WebFolderFile } from "src/models/webFolder";
 import { deleteFiles, deleteFolders, getDownLoadFile, getDownLoadFolder } from "src/remote/folder";
-import { folderListState, upperFolderNameState } from "src/store/atom/folder";
+import {
+  folderListState,
+  setSelectFilesState,
+  setSelectFoldersState,
+  upperFolderNameState,
+} from "src/store/atom/folder";
 import Folder from "./Folder";
 import NewFolder from "./NewFolder";
 import WebFile from "./WebFile";
@@ -27,10 +31,9 @@ function FolderTable({ folder, files }: FolderTableProps) {
 
   const setUpperFolderNo = useSetRecoilState(folderListState);
   const folderName = useRecoilValue(upperFolderNameState);
-  const [select, setSelect] = useState<itemListProps>({ key: "20개씩", value: 20 }); // 아직 개발 안됨
 
-  const [selectFolders, setSelectFolders] = useState<WebFolder[]>([]);
-  const [selectFiles, setSelectFiles] = useState<WebFolderFile[]>([]);
+  const [selectFolders, setSelectFolders] = useRecoilState(setSelectFoldersState);
+  const [selectFiles, setSelectFiles] = useRecoilState(setSelectFilesState);
 
   // 파일 다운로드
   const downloadFiles = useCallback(() => {
@@ -67,23 +70,14 @@ function FolderTable({ folder, files }: FolderTableProps) {
         <Flex justify="space-between">
           <Flex gap={spacing.md}>
             <NewFolder folder={folder} />
-            <Button size="xs" onClick={downloadFiles} disabled={selectFiles.length === 0 && selectFolders.length === 0}>
+            <Button onClick={downloadFiles} disabled={selectFiles.length === 0 && selectFolders.length === 0}>
               다운로드
             </Button>
-            <Button onClick={handleDelete} size="xs" disabled={selectFiles.length === 0 && selectFolders.length === 0}>
+            <Button onClick={handleDelete} disabled={selectFiles.length === 0 && selectFolders.length === 0}>
               삭제
             </Button>
-            <Button size="xs">이동</Button>
-            <Button size="xs" onClick={() => setUpperFolderNo([1])}>
-              처음으로
-            </Button>
+            <Button onClick={() => setUpperFolderNo([1])}>처음으로</Button>
           </Flex>
-          <Selected
-            title="20개씩"
-            currentItem={select}
-            setCurrentItem={setSelect}
-            itemList={[{ key: "20개씩", value: 20 }]}
-          />
         </Flex>
         <Spacing size="lg" />
 
@@ -93,7 +87,7 @@ function FolderTable({ folder, files }: FolderTableProps) {
               <th></th>
               <th align="left">이름</th>
               <th align="right">크기</th>
-              <th>확장자</th>
+              <th align="right">확장자</th>
               <th align="center">등록일</th>
               <th></th>
             </tr>
@@ -138,6 +132,7 @@ const tableStyle = css`
     padding: 10px 15px;
     border-bottom: 1px solid ${colors.grayBorder};
     font-size: 0.875rem;
+    width: 180px;
   }
 
   th {
@@ -147,6 +142,11 @@ const tableStyle = css`
 
   tbody tr:hover {
     background-color: ${colors.hover};
+  }
+
+  th:nth-child(1),
+  td:nth-child(1) {
+    width: 80px;
   }
 `;
 

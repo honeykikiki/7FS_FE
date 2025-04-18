@@ -6,10 +6,15 @@ import MyText from "@components/shared/Text";
 import { css } from "@emotion/react";
 import { colors } from "@styles/colorPlatte";
 import { useQueryClient } from "@tanstack/react-query";
-import { useRecoilState } from "recoil";
+import { useRecoilState, useSetRecoilState } from "recoil";
 import { StorageType } from "src/models/webFolder";
 import { insertFiles } from "src/remote/folder";
-import { selectDataRoomState } from "src/store/atom/folder";
+import {
+  folderListState,
+  selectDataRoomState,
+  setSelectFilesState,
+  setSelectFoldersState,
+} from "src/store/atom/folder";
 import formatFancySize from "src/utils/formatFancySize";
 import FileUploadModal from "./FileUploadModal";
 
@@ -21,8 +26,14 @@ function FolderSide({ totalVolume }: FolderSideProps) {
   const queryClient = useQueryClient();
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectDataRoom, setSelectDataRoom] = useRecoilState(selectDataRoomState);
+  const setUpperFolderNo = useSetRecoilState(folderListState);
+  const setSelectFolders = useSetRecoilState(setSelectFoldersState);
+  const setSelectFiles = useSetRecoilState(setSelectFilesState);
 
   const handleSelectDataRoom = (dataRoomName: StorageType) => {
+    setUpperFolderNo([1]);
+    setSelectFolders([]);
+    setSelectFiles([]);
     setSelectDataRoom(dataRoomName);
   };
 
@@ -30,10 +41,8 @@ function FolderSide({ totalVolume }: FolderSideProps) {
     <Flex direction="column" css={sidebarStyle}>
       {showUploadModal && (
         <FileUploadModal
-          // currentFolder
           onUpload={async (files, folder) => {
             await insertFiles(files, folder);
-            console.log("??");
 
             queryClient.invalidateQueries({ queryKey: ["folder"] });
           }}
@@ -57,19 +66,19 @@ function FolderSide({ totalVolume }: FolderSideProps) {
           자료실
         </MyText>
         <ul>
-          <li>
+          <li onClick={() => handleSelectDataRoom(StorageType.COMPANY)}>
             <MyText
-              onClick={() => handleSelectDataRoom(StorageType.COMPANY)}
               color={selectDataRoom === StorageType.COMPANY ? "textColor" : "textMutedColor"}
+              fontWeight={selectDataRoom === StorageType.COMPANY ? "bold" : "normal"}
               hoverColor="textColor"
             >
               전사 자료실
             </MyText>
           </li>
-          <li>
+          <li onClick={() => handleSelectDataRoom(StorageType.DEPARTMENT)}>
             <MyText
-              onClick={() => handleSelectDataRoom(StorageType.DEPARTMENT)}
               color={selectDataRoom === StorageType.DEPARTMENT ? "textColor" : "textMutedColor"}
+              fontWeight={selectDataRoom === StorageType.DEPARTMENT ? "bold" : "normal"}
               hoverColor="textColor"
             >
               부서 자료실
@@ -82,10 +91,10 @@ function FolderSide({ totalVolume }: FolderSideProps) {
           개인 자료실
         </MyText>
         <ul>
-          <li>
+          <li onClick={() => handleSelectDataRoom(StorageType.PERSONAL)}>
             <MyText
-              onClick={() => handleSelectDataRoom(StorageType.PERSONAL)}
               color={selectDataRoom === StorageType.PERSONAL ? "textColor" : "textMutedColor"}
+              fontWeight={selectDataRoom === StorageType.PERSONAL ? "bold" : "normal"}
               hoverColor="textColor"
             >
               개인 자료실

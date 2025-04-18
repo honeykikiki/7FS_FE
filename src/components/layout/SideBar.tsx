@@ -12,8 +12,7 @@ import { useRouter } from "next/router";
 const sideBar = [
   { link: "/", title: "홈", icon: "🏠" },
   { link: "/webfolder", title: "자료실", icon: "📁" },
-  // { link: "/approval", title: "전자결제", icon: "📝" },
-  { link: "/board", title: "게사판", icon: "📢" },
+  { link: "/approval", title: "전자결제", icon: "📝" },
   { link: "/org/setting", title: "사원 권한 관리", icon: "⚙️" },
 ];
 

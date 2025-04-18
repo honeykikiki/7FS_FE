@@ -55,6 +55,7 @@ const Container = styled.div`
   top: 0;
   left: 220px;
   width: calc(100% - 220px);
+  z-index: 100;
   ${boxShadow}
 `;
 

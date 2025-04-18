@@ -1,5 +1,5 @@
 import { atom } from "recoil";
-import { StorageType } from "src/models/webFolder";
+import { StorageType, WebFolder, WebFolderFile } from "src/models/webFolder";
 
 const folderListDefaultValue = [1];
 
@@ -25,4 +25,18 @@ export const upperFolderNameState = atom<Item2>({
 export const selectDataRoomState = atom<StorageType>({
   key: "folder/selectDataRoomState",
   default: StorageType.COMPANY,
+});
+
+// -----
+
+export const setSelectFoldersState = atom<WebFolder[]>({
+  key: "folder/setSelectFoldersState",
+  default: [],
+});
+
+// -----
+
+export const setSelectFilesState = atom<WebFolderFile[]>({
+  key: "folder/setSelectFilesState",
+  default: [],
 });
