@@ -38,6 +38,7 @@ function ScrollContainer({
           scrollbar-width: none;
           cursor: grab;
           padding: ${padding};
+          max-height: 400px;
 
           &::-webkit-scrollbar {
             display: none;

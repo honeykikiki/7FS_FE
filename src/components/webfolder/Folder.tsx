@@ -29,7 +29,7 @@ function Folder({ folder, selectFolders, setSelectFolders }: FolderProps) {
             setUpperFolderName((prev) => [...prev.slice(0, -1)]);
           }}
         >
-          <td></td>
+          <td style={{ width: "80px" }}></td>
           <td colSpan={5}>
             <MyText>...상위폴더 ({upperFolderName[upperFolderName.length - 1]})</MyText>
           </td>

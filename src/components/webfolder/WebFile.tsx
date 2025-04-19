@@ -4,8 +4,8 @@ import InputCheckbox from "@components/shared/InputCheckBox";
 import MyText from "@components/shared/Text";
 import { css } from "@emotion/react";
 import { WebFolderFile } from "src/models/webFolder";
-import { DEFAULT_URL } from "src/remote/axios";
 import dateFormat from "src/utils/dateFormat";
+import windowOpen from "src/utils/windowOpen";
 
 interface WebFileProps {
   file: WebFolderFile;
@@ -18,18 +18,30 @@ function WebFile({ file, selectFile, setSelectFile }: WebFileProps) {
 
   const handleViewer = () => {
     const type = file.attachFileVO.fileMime;
+    const filePath = file.attachFileVO.fileStrePath;
 
     if (type.includes("pdf")) {
-      window.open(DEFAULT_URL + "viewer/pdf?pdf=" + file.attachFileVO.fileStrePath);
+      windowOpen("viewer/pdf?pdf=", filePath);
       return;
     }
 
     if (type.includes("image")) {
-      window.open(DEFAULT_URL + "viewer/image?image=" + file.attachFileVO.fileStrePath);
+      windowOpen("viewer/image?image=", filePath);
+
       return;
     }
 
-    window.open(DEFAULT_URL + "viewer/image?image=" + file.attachFileVO.fileStrePath);
+    if (type.includes("text")) {
+      windowOpen("viewer/text?text=", filePath);
+      return;
+    }
+
+    if (type.includes("zip")) {
+      windowOpen("viewer/zip?zip=", filePath);
+      return;
+    }
+
+    windowOpen("viewer/text?text=", filePath);
   };
 
   return (
@@ -45,6 +57,7 @@ function WebFile({ file, selectFile, setSelectFile }: WebFileProps) {
       `}
     >
       <td
+        style={{ width: "80px" }}
         onClick={() => {
           if (checked) {
             setSelectFile(selectFile.filter((prev) => prev !== file));

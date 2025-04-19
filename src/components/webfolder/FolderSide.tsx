@@ -7,6 +7,7 @@ import { css } from "@emotion/react";
 import { colors } from "@styles/colorPlatte";
 import { useQueryClient } from "@tanstack/react-query";
 import { useRecoilState, useSetRecoilState } from "recoil";
+import { useAlertContext } from "src/context/AlertContext";
 import { StorageType } from "src/models/webFolder";
 import { insertFiles } from "src/remote/folder";
 import {
@@ -24,6 +25,7 @@ interface FolderSideProps {
 
 function FolderSide({ totalVolume }: FolderSideProps) {
   const queryClient = useQueryClient();
+  const { open } = useAlertContext();
   const [showUploadModal, setShowUploadModal] = useState(false);
   const [selectDataRoom, setSelectDataRoom] = useRecoilState(selectDataRoomState);
   const setUpperFolderNo = useSetRecoilState(folderListState);
@@ -44,9 +46,15 @@ function FolderSide({ totalVolume }: FolderSideProps) {
           onUpload={async (files, folder) => {
             await insertFiles(files, folder);
 
+            open({
+              title: "파일 업로드 완료",
+            });
+
             queryClient.invalidateQueries({ queryKey: ["folder"] });
           }}
-          onClose={() => setShowUploadModal(false)}
+          onClose={() => {
+            setShowUploadModal(false);
+          }}
         />
       )}
 

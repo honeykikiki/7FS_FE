@@ -89,6 +89,7 @@ function FolderRow({ folder, checked, selectFolders, setSelectFolders }: FolderR
       draggable={true}
     >
       <td
+        style={{ width: "80px" }}
         onClick={(e) => {
           e.stopPropagation();
           // 체크박스

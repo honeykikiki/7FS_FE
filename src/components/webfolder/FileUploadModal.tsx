@@ -35,12 +35,16 @@ const FileUploadModal = ({ onClose, onUpload }: FileUploadModalProps) => {
   const inputRef = useRef<HTMLInputElement>(null);
   // 초기에는 내가 보고 있는 폴더명 추가
   const [selectedFolder, setSelectedFolder] = useState<WebFolder>();
+  const [files, setFiles] = useState<FileInfo[]>([]);
 
   useEffect(() => {
+    if (upperFolderNo.length === 1) {
+      setSelectedFolder(data?.folderList[0]);
+      return;
+    }
+
     setSelectedFolder(data?.folderList.filter((item) => item.folderNo === upperFolderNo[upperFolderNo.length - 1])[0]);
   }, [data?.folderList, upperFolderNo]);
-
-  const [files, setFiles] = useState<FileInfo[]>([]);
 
   const handleFileChange = useCallback(
     (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -131,6 +135,7 @@ const FileUploadModal = ({ onClose, onUpload }: FileUploadModalProps) => {
         </Flex>
 
         <Spacing size="lg" />
+        {/* <ScrollContainer> */}
         <table css={tableStyle}>
           <thead>
             <tr>
@@ -149,17 +154,17 @@ const FileUploadModal = ({ onClose, onUpload }: FileUploadModalProps) => {
               return (
                 <tr key={idx}>
                   {/* <td>
-                    <InputCheckbox
-                      checked={checked}
-                      onClick={() => {
-                        if (checked) {
-                          setSelectedFile(selectedFile.filter((prevId) => prevId !== id));
-                        } else {
-                          setSelectedFile((prev) => [...prev, id]);
-                        }
-                      }}
-                    />
-                  </td> */}
+                      <InputCheckbox
+                        checked={checked}
+                        onClick={() => {
+                          if (checked) {
+                            setSelectedFile(selectedFile.filter((prevId) => prevId !== id));
+                          } else {
+                            setSelectedFile((prev) => [...prev, id]);
+                          }
+                        }}
+                      />
+                    </td> */}
                   <td style={{ maxWidth: "280px" }}>
                     <MyText bEllipsis={true}>{file.name}</MyText>
                   </td>
@@ -180,6 +185,7 @@ const FileUploadModal = ({ onClose, onUpload }: FileUploadModalProps) => {
             })}
           </tbody>
         </table>
+        {/* </ScrollContainer> */}
         <Spacing size="md" />
         <Flex justify="space-between">
           <MyText>{addDelimiter((files.reduce((sum, f) => sum + f.file.size, 0) / 1024).toFixed(0))}KB / 20MB</MyText>
@@ -201,7 +207,6 @@ const FileUploadModal = ({ onClose, onUpload }: FileUploadModalProps) => {
 const tableStyle = css`
   width: 100%;
   border-collapse: collapse;
-  overflow: hidden;
 
   th,
   td {
@@ -226,6 +231,7 @@ const Container = styled.div`
   top: 50%;
   transform: translate(-50%, -50%);
   height: auto;
+
   background-color: ${colors.background};
 `;
 

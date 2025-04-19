@@ -84,7 +84,7 @@ function FolderTable({ folder, files }: FolderTableProps) {
         <table css={tableStyle}>
           <thead>
             <tr>
-              <th></th>
+              <th style={{ width: "80px" }}></th>
               <th align="left">이름</th>
               <th align="right">크기</th>
               <th align="right">확장자</th>
@@ -129,9 +129,9 @@ const tableStyle = css`
 
   th,
   td {
-    padding: 10px 15px;
+    padding: 15px 15px;
     border-bottom: 1px solid ${colors.grayBorder};
-    font-size: 0.875rem;
+    /* font-size: 0.875rem; */
     width: 180px;
   }
 
@@ -142,11 +142,6 @@ const tableStyle = css`
 
   tbody tr:hover {
     background-color: ${colors.hover};
-  }
-
-  th:nth-child(1),
-  td:nth-child(1) {
-    width: 80px;
   }
 `;
 
